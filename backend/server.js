@@ -5,10 +5,17 @@ const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+// === CORS KONFİQURASİYASI (ƏSAS DƏYİŞİKLİK BURADADIR) ===
+const corsOptions = {
+  // Yalnız sizin Netlify saytınızdan gələn sorğulara icazə veririk
+  origin: 'https://6870353fcc0915a1375ce47f--spectacular-longma-83acd2.netlify.app',
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Bütün metodlara icazə veririk
+};
+
+app.use(cors(corsOptions)); // CORS-u yeni tənzimləmələrlə işə salırıq
 app.use(express.json());
 
-// YENİ ŞİFRƏ İLƏ DÜZƏLİŞ EDİLMİŞ QOŞULMA SƏTRİ
+// === QALAN HİSSƏLƏR EYNİ QALIR ===
 const CONNECTION_STRING = 'mongodb+srv://servis-user:Kontakt2025@cluster0.wyamdcj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(CONNECTION_STRING)
@@ -37,8 +44,7 @@ const aktSchema = new mongoose.Schema({
 
 const Akt = mongoose.model('Akt', aktSchema);
 
-// === API Endpoints ===
-
+// API Endpoints
 app.post('/api/akts', async (req, res) => {
   try {
     const yeniAkt = new Akt(req.body);
