@@ -1,0 +1,8 @@
+/* frontend/src/index.css */
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* Yeni şriftimizi təyin edirik */
+  background-color: #f4f5f7; /* Səhifə üçün açıq boz arxa fon */
+  color: #172b4d;
+}
