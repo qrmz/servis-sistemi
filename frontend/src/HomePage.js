@@ -1,5 +1,3 @@
-// frontend/src/HomePage.js
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +7,7 @@ function HomePage() {
 
   const fetchAktlar = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/akts');
+      const response = await fetch('https://kontaktplus-servis.onrender.com/api/akts');
       const data = await response.json();
       setAktlar(data);
     } catch (error) {
@@ -23,7 +21,7 @@ function HomePage() {
 
   const handleStatusChange = async (id, yeniStatus) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/akts/${id}`, {
+      const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: yeniStatus }),
@@ -39,7 +37,7 @@ function HomePage() {
   const handleDelete = async (id) => {
     if (window.confirm("Bu aktı silmək istədiyinizə əminsinizmi?")) {
       try {
-        const response = await fetch(`http://localhost:3000/api/akts/${id}`, {
+        const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts/${id}`, {
           method: 'DELETE',
         });
         if (!response.ok) throw new Error('Akt silinərkən xəta baş verdi');
@@ -71,7 +69,6 @@ function HomePage() {
               <td>{akt.seriya}</td>
               <td>
                 <select
-                  // --- YENİ DƏYİŞİKLİK BURADADIR ---
                   className={`status-select ${akt.status}`}
                   value={akt.status}
                   onChange={(e) => handleStatusChange(akt._id, e.target.value)}

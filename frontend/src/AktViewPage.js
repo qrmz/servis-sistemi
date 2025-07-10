@@ -1,5 +1,3 @@
-// frontend/src/AktViewPage.js
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -10,7 +8,7 @@ function AktViewPage() {
   useEffect(() => {
     const fetchAkt = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/akts/${id}`);
+        const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts/${id}`);
         if (!response.ok) throw new Error('Akt tapılmadı');
         const data = await response.json();
         setAkt(data);
@@ -40,8 +38,6 @@ function AktViewPage() {
       <p><strong>Komplektasiya:</strong> {akt.komplekt}</p>
       <p><strong>Göndərilmə Səbəbi:</strong> {akt.sebeb}</p>
       <hr/>
-      
-      {/* --- YENİ DƏYİŞİKLİK BURADADIR --- */}
       <div className="signature-section">
         <div className="signature-box">
           <div className="signature-name">Təhvil Alan: {akt.ekspert}</div>
@@ -52,7 +48,6 @@ function AktViewPage() {
           <div className="signature-line"></div>
         </div>
       </div>
-
       <button onClick={() => window.print()}>Çap Et</button>
     </div>
   );
