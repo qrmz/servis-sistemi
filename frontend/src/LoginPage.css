@@ -1,0 +1,93 @@
+/* frontend/src/LoginPage.css */
+.login-page-wrapper {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .login-page-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5); /* Şəklin üzərini bir az tündləşdirir */
+  }
+  
+  .login-box {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .login-logo h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #e60000;
+      margin-top: 0;
+      margin-bottom: 20px;
+  }
+  
+  .login-logo h1 span {
+      color: #fff;
+      background-color: #000;
+      padding: 2px 10px;
+      border-radius: 4px;
+  }
+  
+  .login-box form {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+  }
+  
+  .login-box label {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+  }
+  
+  .login-box input {
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+  }
+  
+  .login-box button {
+      margin-top: 25px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background-color: #e60000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+  }
+  
+  .login-box button:hover {
+      background-color: #c40000;
+  }
+  
+  .login-page-wrapper footer {
+      position: absolute;
+      bottom: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      z-index: 1;
+  }

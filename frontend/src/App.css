@@ -1,13 +1,12 @@
 /* frontend/src/App.css */
 
-/* Əsas konteyner */
+/* === ÜMUMİ VƏ BAŞLIQ STİLLƏRİ === */
 .App {
   text-align: center;
 }
 
-/* Qırmızı Başlıq (Header) */
 .App-header {
-  background-color: #e60000; /* KontaktPlus Qırmızısı */
+  background-color: #e60000;
   padding: 15px 30px;
   color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -17,38 +16,36 @@
 }
 
 .App-header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 700;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .App-header h1 a {
-    text-decoration: none;
-    color: white;
+  text-decoration: none;
+  color: white;
 }
 
 .App-header h1 span {
-    color: black;
-    background-color: white;
-    padding: 0 8px;
-    border-radius: 4px;
+  color: black;
+  background-color: white;
+  padding: 0 8px;
+  border-radius: 4px;
 }
 
-/* Ümumi Naviqasiya */
 nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    margin-left: 20px;
-    font-size: 16px;
-    transition: opacity 0.2s;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 20px;
+  font-size: 16px;
+  transition: opacity 0.2s;
 }
 
 nav a:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
-/* Əsas məzmunun olduğu hissə */
 main {
   max-width: 1200px;
   margin: 30px auto;
@@ -62,13 +59,13 @@ h2 {
   color: #333;
 }
 
-/* Yeni Forma Stili (Alt-alta) */
+/* === YENİ AKT FORMASI STİLİ === */
 form {
   display: flex;
-  flex-direction: column; /* Elementləri şaquli düzürük */
-  gap: 12px; /* Sahələr arasındakı məsafə */
-  max-width: 600px; /* Formanın maksimal eni */
-  margin: 20px auto; /* Formanı mərkəzə gətirir */
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  margin: 20px auto;
   text-align: left;
 }
 
@@ -88,12 +85,11 @@ form input, form textarea, form select {
 }
 
 form input:focus, form textarea:focus, form select:focus {
-    border-color: #e60000;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.2);
+  border-color: #e60000;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.2);
 }
 
-/* "Aktı Yarat" düyməsi */
 form button {
   padding: 12px;
   font-size: 16px;
@@ -111,7 +107,7 @@ form button:hover {
   background-color: #c40000;
 }
 
-/* Məlumat Cədvəli */
+/* === CƏDVƏL STİLİ === */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -138,28 +134,81 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:hover {
-    background-color: #e9ecef;
+  background-color: #e9ecef;
 }
 
-/* Cədvəl içindəki Sil düyməsi və Status menyusu */
-td button, td select {
+/* === CƏDVƏL İÇİNDƏKİ ELEMENTLƏR === */
+td .action-btn {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 14px;
+  color: white;
+}
+
+td .print-btn {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+td .print-btn:hover {
+  background-color: #0056b3;
+}
+
+td .delete-btn {
+  background-color: #e60000;
+}
+
+td .delete-btn:hover {
+  background-color: #c40000;
+}
+
+/* === STATUSLARIN RƏNGLƏNMƏSİ === */
+.status-select {
+    font-weight: bold;
+    border-width: 2px;
     padding: 6px 10px;
-    border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
 }
 
-td button {
-    background-color: #e60000;
-    color: white;
+.status-select.sistemə-gözləyir {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+  color: #555;
 }
 
-td button:hover {
-    background-color: #c40000;
+.status-select.sistemə-işlənib {
+  background-color: #e6f2ff;
+  border-color: #007bff;
+  color: #0056b3;
 }
 
-/* Çap Səhifəsi Stili */
+.status-select.göndərilib {
+  background-color: #fff3e6;
+  border-color: #ff9800;
+  color: #e65100;
+}
+
+.status-select.gəlib {
+  background-color: #e6f7ec;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.status-select.təslim-edilib {
+  background-color: #ffebe6;
+  border-color: #e60000;
+  color: #c40000;
+}
+
+/* === ÇAP SƏHİFƏSİ STİLİ === */
 .print-container {
     max-width: 800px;
     margin: 20px auto;
@@ -192,8 +241,36 @@ td button:hover {
     cursor: pointer;
 }
 
+/* === LOGIN SƏHİFƏSİ STİLİ === */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+}
+
+.login-container form {
+  max-width: 400px;
+  width: 100%;
+  padding: 30px;
+  border: 1px solid #dfe1e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.error-message {
+  color: #e60000;
+  background-color: #ffebe6;
+  border: 1px solid #e60000;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* === MEDİA QAYDALARI (ÇAP ÜÇÜN) === */
 @media print {
-    .print-container button, header {
+    .print-container button, header, nav {
         display: none;
     }
     main {
@@ -203,93 +280,94 @@ td button:hover {
         padding: 0;
     }
 }
-/* ... App.css-dəki digər stillər qalır ... */
+.logout-btn {
+    background-color: white;
+    color: #e60000;
+    border: 2px solid #e60000;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 20px;
+}
+.logout-btn:hover {
+    background-color: #ffebe6;
+}
 
-/* Cədvəl içindəki Əməliyyat düymələri */
-td .action-btn {
-  padding: 6px 10px;
+/* === Filter və Axtarış Stili === */
+
+.filter-container {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  text-decoration: none;
-  display: inline-block;
-  margin-right: 5px;
+  box-sizing: border-box;
+}
+
+.date-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.date-filters label {
+  font-weight: 600;
+}
+
+.date-filters input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.filter-buttons button {
+  padding: 10px 20px;
   font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-td .print-btn {
-  background-color: #007bff; /* Mavi rəng */
+.main-btn {
+  background-color: #007bff;
   color: white;
-  border-color: #007bff;
 }
 
-td .print-btn:hover {
+.main-btn:hover {
   background-color: #0056b3;
 }
 
-td .delete-btn {
-  background-color: #e60000;
+.secondary-btn {
+  background-color: #6c757d;
   color: white;
 }
 
-td .delete-btn:hover {
-  background-color: #c40000;
-} 
-/* === Statusların Rənglənməsi === */
-
-.status-select {
-  font-weight: bold;
-  border-width: 2px;
+.secondary-btn:hover {
+  background-color: #5a6268;
 }
 
-.status-select.sistemə-gözləyir {
-  background-color: #f0f0f0;
-  border-color: #ccc;
+.results-count {
+  text-align: left;
+  font-style: italic;
   color: #555;
-}
-
-.status-select.sistemə-işlənib {
-  background-color: #e6f2ff;
-  border-color: #007bff;
-  color: #0056b3;
-}
-
-.status-select.göndərilib {
-  background-color: #fff3e6;
-  border-color: #ff9800;
-  color: #e65100;
-}
-
-.status-select.gəlib {
-  background-color: #e6f7ec; /* Açıq yaşıl fon */
-  border-color: #28a745;   /* Yaşıl çərçivə */
-  color: #155724;          /* Tünd yaşıl yazı */
-}
-
-.status-select.təslim-edilib {
-  background-color: #ffebe6; /* Açıq qırmızı fon */
-  border-color: #e60000;   /* Qırmızı çərçivə */
-  color: #c40000;          /* Tünd qırmızı yazı */
-}
-/* === İmza Hissəsi Stili === */
-
-.signature-section {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 80px;
-}
-
-.signature-box {
-  width: 45%;
-}
-
-.signature-name {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.signature-line {
-  border-bottom: 1px solid #333;
-  margin-top: 60px;
 }
