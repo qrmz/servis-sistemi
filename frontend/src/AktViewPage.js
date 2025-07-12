@@ -1,7 +1,8 @@
-// frontend/src/AktViewPage.js - YEKUN VERSİYA
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 function AktViewPage() {
   const [akt, setAkt] = useState(null);
@@ -9,34 +10,29 @@ function AktViewPage() {
   const { token } = useAuth();
   const location = useLocation();
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
-
   useEffect(() => {
-    if (location.state && location.state.akt) {
-      setAkt(location.state.akt);
-      return;
-    } 
-    
     const fetchAkt = async () => {
       if (!id || !token) return;
       try {
         const response = await fetch(`${API_URL}/api/akts/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Akt tapılmadı və ya giriş üçün icazə yoxdur.');
+        if (!response.ok) throw new Error('Akt tapılmadı və ya icazə yoxdur');
         const data = await response.json();
         setAkt(data);
       } catch (error) {
         console.error("Akt məlumatı alarkən xəta:", error);
       }
     };
-    fetchAkt();
     
+    if (location.state && location.state.akt) {
+      setAkt(location.state.akt);
+    } else {
+      fetchAkt();
+    }
   }, [id, token, location.state, API_URL]);
 
-  if (!akt) {
-    return <div style={{padding: '20px'}}>Yüklənir...</div>;
-  }
+  if (!akt) { return <div style={{padding: '20px'}}>Yüklənir...</div>; }
 
   return (
     <div className="print-container">
@@ -63,5 +59,4 @@ function AktViewPage() {
     </div>
   );
 }
-
 export default AktViewPage;

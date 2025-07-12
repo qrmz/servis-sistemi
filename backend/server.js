@@ -1,47 +1,28 @@
 require('dotenv').config();
-const { protect } = require('./middleware/authMiddleware');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { protect } = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// === CORS KONFİQURASİYASI ===
-const allowedOrigins = [
-  'https://6870353fcc0915a1375ce47f--spectacular-longma-83acd2.netlify.app', // Sizin Netlify saytınız
-  'http://localhost:3001' // Sizin lokal frontend-iniz
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Əgər sorğu gələn ünvan icazə verilən siyahıdadırsa (və ya sorğunun origin-i yoxdursa, məsələn Postman kimi)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Bu mənbədən girişə CORS tərəfindən icazə verilmir'));
-    }
-  }
-};
-
-app.use(cors(corsOptions));
+// CORS Konfiqurasiyası
+app.use(cors()); 
 app.use(express.json());
 
-// === DATABASE CONNECTION ===
-const CONNECTION_STRING = process.env.CONNECTION_STRING;
-mongoose.connect(CONNECTION_STRING)
+// Database Connection
+mongoose.connect(process.env.CONNECTION_STRING)
   .then(() => console.log('Verilənlər bazasına uğurla qoşuldu!'))
   .catch((err) => console.error('Verilənlər bazasına qoşularkən xəta baş verdi:', err));
 
-// === ROUTES ===
+// Routes
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
-
 const aktRoutes = require('./routes/aktRoutes');
-// /api/akts ilə başlayan bütün sorğular əvvəlcə "protect" mühafizəçisindən keçməlidir
-app.use('/api/akts', protect, aktRoutes);
 
+app.use('/api/users', userRoutes);
+app.use('/api/akts', protect, aktRoutes); // Bütün akt sorğuları artıq qorunur
 
 app.listen(PORT, () => {
-  console.log(`Server ${PORT} portunda işə düşdü`);
+  console.log(`Server ${PORT} portunda işləyir və hazırdır!`);
 });

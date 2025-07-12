@@ -1,16 +1,14 @@
-// backend/routes/aktRoutes.js - TAM VƏ DÜZGÜN VERSİYA
 const express = require('express');
 const router = express.Router();
 const Akt = require('../models/Akt');
 
-// BÜTÜN AKTLARI GƏTİR (GET)
+// Bütün aktları gətir
 router.get('/', async (req, res) => {
     try {
         let filter = {};
         if (req.user.role !== 'admin') {
             filter.storeName = req.user.storeName;
         }
-        
         const { startDate, endDate, searchTerm } = req.query;
         if (startDate && endDate) {
             filter.tarix = { $gte: new Date(startDate), $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)) };
@@ -29,7 +27,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// YENİ AKT YARAT (POST)
+// Yeni akt yarat
 router.post('/', async (req, res) => {
   try {
     const yeniAkt = new Akt({ ...req.body, storeName: req.user.storeName });
@@ -40,14 +38,13 @@ router.post('/', async (req, res) => {
   }
 });
 
-// TƏK BİR AKTI ID İLƏ GƏTİR (GET /:id) - ƏSAS DÜZƏLİŞ BURADADIR
+// Tək bir aktı ID ilə gətir
 router.get('/:id', async (req, res) => {
     try {
         const akt = await Akt.findById(req.params.id);
         if (!akt) {
             return res.status(404).send({ message: "Akt tapılmadı" });
         }
-        // Təhlükəsizlik yoxlaması: Adi istifadəçi başqa mağazanın aktına baxa bilməz
         if (req.user.role !== 'admin' && akt.storeName !== req.user.storeName) {
             return res.status(403).json({ message: 'Bu əməliyyat üçün icazəniz yoxdur' });
         }
@@ -57,7 +54,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// AKTI YENİLƏ (PUT)
+// Aktı yenilə
 router.put('/:id', async (req, res) => {
     if (req.user.role === 'admin') {
         return res.status(403).json({ message: 'Admin istifadəçilər məlumatları dəyişə bilməz' });
@@ -71,7 +68,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// AKTI SİL (DELETE)
+// Aktı sil
 router.delete('/:id', async (req, res) => {
     if (req.user.role === 'admin') {
         return res.status(403).json({ message: 'Admin istifadəçilər məlumatları silə bilməz' });

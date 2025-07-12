@@ -1,7 +1,8 @@
-// frontend/src/HomePage.js - YEKUN VERSİYA
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 function HomePage() {
   const [aktlar, setAktlar] = useState([]);
@@ -9,10 +10,7 @@ function HomePage() {
   const [endDate, setEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const { token, user, logout } = useAuth();
-
   const statusOptions = ["sistemə-gözləyir", "sistemə-işlənib", "göndərilib", "gəlib", "təslim-edilib"];
-  
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
   const fetchAktlar = useCallback(async (query = '') => {
     if (!token) return;
@@ -28,7 +26,7 @@ function HomePage() {
       console.error("Aktları alarkən xəta baş verdi:", error);
       setAktlar([]);
     }
-  }, [token, logout, API_URL]);
+  }, [token, logout]);
 
   useEffect(() => {
     fetchAktlar();
@@ -52,8 +50,7 @@ function HomePage() {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: yeniStatus }),
       });
-      // Optimistic update
-      setAktlar(aktlar.map(akt => akt._id === id ? { ...akt, status: yeniStatus } : akt));
+      fetchAktlar();
     } catch (error) { console.error("Status yenilənərkən xəta:", error); }
   };
 
@@ -61,11 +58,10 @@ function HomePage() {
     if (user && user.role === 'admin') { alert('Admin aktı silə bilməz.'); return; }
     if (window.confirm("Bu aktı silmək istədiyinizə əminsinizmi?")) {
       try {
-        const response = await fetch(`${API_URL}/api/akts/${id}`, { 
+        await fetch(`${API_URL}/api/akts/${id}`, { 
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Akt silinərkən xəta baş verdi');
         setAktlar(aktlar.filter(akt => akt._id !== id));
       } catch (error) { console.error("Akt silinərkən xəta:", error); }
     }
@@ -99,24 +95,13 @@ function HomePage() {
               <td>{akt.mehsul}</td>
               <td>{akt.seriya}</td>
               <td>
-                <select 
-                  className={`status-select ${akt.status}`} 
-                  value={akt.status} 
-                  onChange={(e) => handleStatusChange(akt._id, e.target.value)}
-                  disabled={user && user.role === 'admin'}
-                >
+                <select className={`status-select ${akt.status}`} value={akt.status} onChange={(e) => handleStatusChange(akt._id, e.target.value)} disabled={user && user.role === 'admin'}>
                   {statusOptions.map(option => (<option key={option} value={option}>{option.replace(/-/g, ' ').toUpperCase()}</option>))}
                 </select>
               </td>
               <td>
                 <Link to={`/akt/${akt._id}`} className="action-btn print-btn">Çap Et</Link>
-                <button 
-                  onClick={() => handleDelete(akt._id)} 
-                  className="action-btn delete-btn"
-                  disabled={user && user.role === 'admin'}
-                >
-                  Sil
-                </button>
+                <button onClick={() => handleDelete(akt._id)} className="action-btn delete-btn" disabled={user && user.role === 'admin'}>Sil</button>
               </td>
             </tr>
           ))}
