@@ -1,3 +1,4 @@
+// backend/server.js - YEKUN VƏ TAM DÜZGÜN VERSİYA
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,30 +8,31 @@ const { protect } = require('./middleware/authMiddleware');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// === CORS KONFİQURASİYASI ===
-// Canlı və lokal mühitlərdən gələn sorğulara icazə veririk
+// === CORS KONFİQURASİYASI (YENİLƏNMİŞ) ===
 const allowedOrigins = [
-  'https://kontakt-service.netlify.app',
-  'http://localhost:3001'
+  'https://kontakt-service.netlify.app', // Sizin yeni Netlify saytınız
+  'http://localhost:3001'                // Sizin lokal frontend-iniz
 ];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('CORS tərəfindən icazə verilməyən mənbə'));
+      callback(new Error('Bu mənbədən girişə CORS tərəfindən icazə verilmir'));
     }
   }
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// === DATABASE CONNECTION ===
+// Verilənlər bazasına qoşulma
 mongoose.connect(process.env.CONNECTION_STRING)
   .then(() => console.log('Verilənlər bazasına uğurla qoşuldu!'))
   .catch((err) => console.error('Verilənlər bazasına qoşularkən xəta baş verdi:', err));
 
-// === ROUTES ===
+// Routes
 const userRoutes = require('./routes/userRoutes');
 const aktRoutes = require('./routes/aktRoutes');
 
