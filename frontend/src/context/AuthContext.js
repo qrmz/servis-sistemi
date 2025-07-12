@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// frontend/src/context/AuthContext.js - SON DÜZƏLİŞ
+
+import React, { createContext, useState, useContext } from 'react'; // useEffect buradan silindi
 import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
