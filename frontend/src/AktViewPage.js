@@ -11,26 +11,25 @@ function AktViewPage() {
   const location = useLocation();
 
   useEffect(() => {
-    const fetchAkt = async () => {
-      if (!id || !token) return;
-      try {
-        const response = await fetch(`${API_URL}/api/akts/${id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('Akt tapılmadı və ya icazə yoxdur');
-        const data = await response.json();
-        setAkt(data);
-      } catch (error) {
-        console.error("Akt məlumatı alarkən xəta:", error);
-      }
-    };
-    
     if (location.state && location.state.akt) {
       setAkt(location.state.akt);
     } else {
+      const fetchAkt = async () => {
+        if (!id || !token) return;
+        try {
+          const response = await fetch(`${API_URL}/api/akts/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!response.ok) throw new Error('Akt tapılmadı');
+          const data = await response.json();
+          setAkt(data);
+        } catch (error) {
+          console.error("Akt məlumatı alarkən xəta:", error);
+        }
+      };
       fetchAkt();
     }
-  }, [id, token, location.state, API_URL]);
+  }, [id, token, location.state]); // <- Siyahıdan API_URL silindi
 
   if (!akt) { return <div style={{padding: '20px'}}>Yüklənir...</div>; }
 
