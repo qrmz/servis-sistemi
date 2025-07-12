@@ -1,10 +1,10 @@
-// frontend/src/LoginPage.js
-
 import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './LoginPage.css';
 import loginBg from './login-bg.jpg';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -12,26 +12,23 @@ function LoginPage() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      // ===== DÜZƏLİŞ EDİLMİŞ SƏTİR AŞAĞIDADIR =====
-      // Sorğunu yenidən localhost-dakı serverə göndəririk
-      const response = await fetch('http://localhost:3000/api/users/login', {
+      const response = await fetch(`${API_URL}/api/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-      // ===============================================
-      
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Login zamanı xəta baş verdi');
-      }
+      if (!response.ok) throw new Error(data.message || 'Login zamanı xəta baş verdi');
       login(data.token);
-      navigate('/');
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
     }
@@ -40,9 +37,7 @@ function LoginPage() {
   return (
     <div className="login-page-wrapper" style={{ backgroundImage: `url(${loginBg})` }}>
       <div className="login-box">
-        <div className="login-logo">
-          <h1>Kontakt<span>Plus</span></h1>
-        </div>
+        <div className="login-logo"><h1>Kontakt<span>Plus</span></h1></div>
         <form onSubmit={handleSubmit}>
           <h2>Sistemə Daxil Ol</h2>
           {error && <p className="error-message">{error}</p>}
@@ -57,5 +52,4 @@ function LoginPage() {
     </div>
   );
 }
-
 export default LoginPage;

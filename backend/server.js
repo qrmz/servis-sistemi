@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { protect } = require('./middleware/authMiddleware');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -37,7 +38,8 @@ const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
 const aktRoutes = require('./routes/aktRoutes');
-app.use('/api/akts', aktRoutes);
+// /api/akts ilə başlayan bütün sorğular əvvəlcə "protect" mühafizəçisindən keçməlidir
+app.use('/api/akts', protect, aktRoutes);
 
 
 app.listen(PORT, () => {

@@ -1,51 +1,38 @@
-// frontend/src/App.js
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'; // <-- Outlet və Navigate bura əlavə edildi
 import HomePage from './HomePage';
 import YeniAktPage from './YeniAktPage';
 import AktViewPage from './AktViewPage';
 import LoginPage from './LoginPage';
 import Layout from './Layout';
-import { useAuth } from './context/AuthContext'; // AuthContext-i bura da import edirik
+import { useAuth } from './context/AuthContext';
 import './App.css'; 
 
-// İstifadəçinin daxil olub-olmadığını yoxlayan xüsusi bir komponent
-function ProtectedRoute({ children }) {
+const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    // Əgər daxil olmayıbsa, login səhifəsinə yönləndirir
-    return <Navigate to="/login" />;
-  }
-  return children;
-}
+  // ProtectedRoute-un içində artıq Layout yox, Outlet istifadə olunur
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+};
 
 function App() {
   const { isAuthenticated } = useAuth();
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* Əgər istifadəçi daxil olubsa və /login səhifəsinə getməyə çalışırsa, onu ana səhifəyə yönləndir */}
         <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />} />
         
-        {/* Əsas səhifələr qorunan bir Route içindədir */}
-        <Route 
-          path="/*" 
-          element={
-            <ProtectedRoute>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<HomePage />} />
-                  <Route path="yeni-akt" element={<YeniAktPage />} />
-                  <Route path="akt/:id" element={<AktViewPage />} />
-                </Route>
-              </Routes>
-            </ProtectedRoute>
-          } 
-        />
+        {/* Bütün qorunan səhifələr Layout-un içindədir */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="yeni-akt" element={<YeniAktPage />} />
+            <Route path="akt/:id" element={<AktViewPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );
 }
-
 export default App;

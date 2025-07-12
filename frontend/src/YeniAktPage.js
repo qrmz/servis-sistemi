@@ -1,17 +1,21 @@
-// frontend/src/YeniAktPage.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 function YeniAktPage() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false); // Düymənin basılıb-basılmadığını yoxlamaq üçün
+  const { token } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // === PROBLEMİN MƏNBƏYİ OLAN SƏTİR BU İDİ, İNDİ DÜZƏLDİLİB ===
   const [formData, setFormData] = useState({
     musteri: '', elaqe: '', faktura: '', mehsul: '', seriya: '',
     xarici: '', zemanet: 'Rəsmi', komplekt: '', sebep: '',
-    ekspert: '', veren: ''
+    ekspert: '', veren: '', storeName: '' // storeName-i də əlavə edirik
   });
+  // ==========================================================
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,33 +23,32 @@ function YeniAktPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Göndərmə prosesi başladı
-    console.log("1. handleSubmit funksiyası işə düşdü.");
+    if (!token) {
+      alert("Sistemə daxil olmalısınız!");
+      return;
+    }
+    setIsSubmitting(true);
 
     try {
-      console.log("2. Backend-ə sorğu göndərilir:", JSON.stringify(formData));
-      const response = await fetch('https://kontaktplus-servis.onrender.com/api/akts', {
+      const response = await fetch(`${API_URL}/api/akts`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       });
 
-      console.log("3. Backend-dən cavab gəldi. Status:", response.status);
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('4. Serverdən xəta cavabı:', errorData);
         throw new Error('Akt yaradılarkən server xətası baş verdi');
       }
-      
+
       const yeniAkt = await response.json();
-      console.log("5. Yeni akt uğurla yaradıldı, ID:", yeniAkt._id);
-      
-      console.log("6. Çap səhifəsinə yönləndirilir...");
-      navigate(`/akt/${yeniAkt._id}`); 
+      navigate(`/akt/${yeniAkt._id}`, { state: { akt: yeniAkt } }); 
 
     } catch (error) {
-      console.error("7. Prosesdə ümumi xəta baş verdi:", error);
-      setIsSubmitting(false); // Xəta baş verərsə düyməni yenidən aktivləşdir
+      console.error("Forma göndərilərkən xəta:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -53,7 +56,6 @@ function YeniAktPage() {
     <div>
       <h2>Yeni Akt Yarat</h2>
       <form onSubmit={handleSubmit}>
-        {/* Bütün input, select, textarea sahələri olduğu kimi qalır... */}
         <label>Müştəri Adı:</label>
         <input name="musteri" value={formData.musteri} onChange={handleChange} required />
         <label>Əlaqə Nömrəsi:</label>
@@ -81,8 +83,6 @@ function YeniAktPage() {
         <input name="ekspert" value={formData.ekspert} onChange={handleChange} required />
         <label>Təhvil Verən Şəxs:</label>
         <input name="veren" value={formData.veren} onChange={handleChange} required />
-        
-        {/* Düyməni proses zamanı qeyri-aktiv edirik */}
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Göndərilir...' : 'Aktı Yarat və Çap Et'}
         </button>

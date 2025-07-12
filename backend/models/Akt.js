@@ -13,6 +13,7 @@ const aktSchema = new mongoose.Schema({
   komplekt: String,
   sebeb: { type: String, required: true },
   ekspert: { type: String, required: true },
+  storeName: { type: String, required: true },
   veren: { type: String, required: true },
   status: { type: String, default: 'sistemə-gözləyir' },
   tarix: { type: Date, default: Date.now }

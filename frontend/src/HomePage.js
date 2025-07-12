@@ -1,103 +1,86 @@
-// frontend/src/HomePage.js
-
-import React, { useState, useEffect } from 'react';
+// frontend/src/HomePage.js - YEKUN VERSİYA
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 function HomePage() {
   const [aktlar, setAktlar] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const { token, user, logout } = useAuth();
 
   const statusOptions = ["sistemə-gözləyir", "sistemə-işlənib", "göndərilib", "gəlib", "təslim-edilib"];
+  
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
-  const fetchAktlar = async (query = '') => {
+  const fetchAktlar = useCallback(async (query = '') => {
+    if (!token) return;
     try {
-      const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts?${query}`);
+      const response = await fetch(`${API_URL}/api/akts?${query}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.status === 401) { logout(); return; }
+      if (!response.ok) throw new Error('Məlumatları alarkən problem yarandı');
       const data = await response.json();
-      setAktlar(data);
+      setAktlar(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Aktları alarkən xəta baş verdi:", error);
+      setAktlar([]);
     }
-  };
+  }, [token, logout]);
 
   useEffect(() => {
-    fetchAktlar(); // Səhifə ilk dəfə açılanda bütün aktları yükləyir
-  }, []);
+    fetchAktlar();
+  }, [fetchAktlar]);
 
   const handleFilter = () => {
-    const queryParams = new URLSearchParams({
-        startDate,
-        endDate,
-        searchTerm
-    }).toString();
+    const queryParams = new URLSearchParams({ startDate, endDate, searchTerm }).toString();
     fetchAktlar(queryParams);
   };
 
   const handleReset = () => {
-    setStartDate('');
-    setEndDate('');
-    setSearchTerm('');
-    fetchAktlar(); // Bütün filterləri təmizləyib yenidən hamısını yükləyir
+    setStartDate(''); setEndDate(''); setSearchTerm('');
+    fetchAktlar();
   };
 
-  // ... handleStatusChange və handleDelete funksiyaları olduğu kimi qalır ...
   const handleStatusChange = async (id, yeniStatus) => {
+    if (user && user.role === 'admin') { alert('Admin statusu dəyişə bilməz.'); return; }
     try {
-      const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts/${id}`, {
+      await fetch(`${API_URL}/api/akts/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: yeniStatus }),
       });
-      if (!response.ok) throw new Error('Status yenilənərkən xəta baş verdi');
-      const yenilenmisAkt = await response.json();
-      setAktlar(aktlar.map(akt => (akt._id === id ? yenilenmisAkt : akt)));
-    } catch (error) {
-      console.error("Status yenilənərkən xəta:", error);
-    }
+      // Optimistic update
+      setAktlar(aktlar.map(akt => akt._id === id ? { ...akt, status: yeniStatus } : akt));
+    } catch (error) { console.error("Status yenilənərkən xəta:", error); }
   };
 
   const handleDelete = async (id) => {
+    if (user && user.role === 'admin') { alert('Admin aktı silə bilməz.'); return; }
     if (window.confirm("Bu aktı silmək istədiyinizə əminsinizmi?")) {
       try {
-        const response = await fetch(`https://kontaktplus-servis.onrender.com/api/akts/${id}`, {
-          method: 'DELETE',
+        const response = await fetch(`${API_URL}/api/akts/${id}`, { 
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!response.ok) throw new Error('Akt silinərkən xəta baş verdi');
         setAktlar(aktlar.filter(akt => akt._id !== id));
-      } catch (error) {
-        console.error("Akt silinərkən xəta:", error);
-      }
+      } catch (error) { console.error("Akt silinərkən xəta:", error); }
     }
   };
-
 
   return (
     <div>
       <h2>Bütün Aktların Siyahısı</h2>
-
-      {/* --- YENİ HİSSƏ: FİLTER VƏ AXTARIŞ --- */}
       <div className="filter-container">
-        <input 
-            type="text" 
-            placeholder="Axtar (Müştəri, Məhsul, Seriya...)"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="search-input"
-        />
+        <input type="text" placeholder="Axtar (Müştəri, Məhsul, Seriya...)" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="search-input" />
         <div className="date-filters">
             <label>Başlanğıc Tarix:</label>
-            <input 
-                type="date" 
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-            />
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
             <label>Son Tarix:</label>
-            <input 
-                type="date" 
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-            />
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
         </div>
         <div className="filter-buttons">
             <button onClick={handleFilter} className="main-btn">Filterlə</button>
@@ -105,18 +88,9 @@ function HomePage() {
         </div>
       </div>
       <p className="results-count"><strong>Nəticə: {aktlar.length} akt tapıldı</strong></p>
-
-
       <table>
-        {/* ... cədvəl olduğu kimi qalır ... */}
         <thead>
-          <tr>
-            <th>Müştəri</th>
-            <th>Məhsul</th>
-            <th>Seriya Nömrəsi</th>
-            <th>Status</th>
-            <th>Əməliyyatlar</th>
-          </tr>
+          <tr><th>Müştəri</th><th>Məhsul</th><th>Seriya Nömrəsi</th><th>Status</th><th>Əməliyyatlar</th></tr>
         </thead>
         <tbody>
           {aktlar.map(akt => (
@@ -125,21 +99,22 @@ function HomePage() {
               <td>{akt.mehsul}</td>
               <td>{akt.seriya}</td>
               <td>
-                <select
-                  className={`status-select ${akt.status}`}
-                  value={akt.status}
+                <select 
+                  className={`status-select ${akt.status}`} 
+                  value={akt.status} 
                   onChange={(e) => handleStatusChange(akt._id, e.target.value)}
+                  disabled={user && user.role === 'admin'}
                 >
-                  {statusOptions.map(option => (
-                    <option key={option} value={option}>
-                      {option.replace(/-/g, ' ').toUpperCase()}
-                    </option>
-                  ))}
+                  {statusOptions.map(option => (<option key={option} value={option}>{option.replace(/-/g, ' ').toUpperCase()}</option>))}
                 </select>
               </td>
               <td>
                 <Link to={`/akt/${akt._id}`} className="action-btn print-btn">Çap Et</Link>
-                <button onClick={() => handleDelete(akt._id)} className="action-btn delete-btn">
+                <button 
+                  onClick={() => handleDelete(akt._id)} 
+                  className="action-btn delete-btn"
+                  disabled={user && user.role === 'admin'}
+                >
                   Sil
                 </button>
               </td>

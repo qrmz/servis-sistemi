@@ -1,26 +1,37 @@
-// frontend/src/context/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [userToken, setUserToken] = useState(localStorage.getItem('token'));
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem('token'));
 
   const login = (token) => {
     localStorage.setItem('token', token);
-    setUserToken(token);
+    setAuthToken(token);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    setUserToken(null);
+    setAuthToken(null);
   };
 
+  let user = null;
+  if (authToken) {
+    try {
+      user = jwtDecode(authToken);
+    } catch (e) {
+      console.error("Invalid token:", e);
+      logout();
+    }
+  }
+
   const authInfo = {
-    token: userToken,
+    token: authToken,
+    user,
     login,
     logout,
-    isAuthenticated: !!userToken, // Token varsa, true, yoxdursa false qaytarır
+    isAuthenticated: !!authToken,
   };
 
   return (
@@ -30,7 +41,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Bu, digər komponentlərdə auth məlumatlarını asanlıqla almaq üçün bir custom hook-dur
 export const useAuth = () => {
   return useContext(AuthContext);
 };
