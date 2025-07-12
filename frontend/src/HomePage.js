@@ -28,7 +28,7 @@ function HomePage() {
       console.error("Aktları alarkən xəta baş verdi:", error);
       setAktlar([]);
     }
-  }, [token, logout]);
+  }, [token, logout, API_URL]);
 
   useEffect(() => {
     fetchAktlar();
