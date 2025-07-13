@@ -14,9 +14,18 @@ const allowedOrigins = [
   'http://localhost:3001'                // Sizin lokal frontend-iniz
 ];
 
+// backend/server.js faylının içində...
+
+// Middleware
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Canlı Netlify ünvanı
+    const productionOrigin = 'https://kontakt-service.netlify.app';
+
+    // Əgər mühit 'production' deyilsə (yəni lokal kompüterdirsə),
+    // və ya sorğu gələn ünvan bizim canlı saytımızdırsa, icazə ver.
+    // Postman kimi 'origin'-i olmayan sorğulara da icazə verilir (!origin).
+    if (process.env.NODE_ENV !== 'production' || !origin || origin === productionOrigin) {
       callback(null, true);
     } else {
       callback(new Error('Bu mənbədən girişə CORS tərəfindən icazə verilmir'));
@@ -26,6 +35,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// ... qalan kod olduğu kimi qalır
 
 // Verilənlər bazasına qoşulma
 mongoose.connect(process.env.CONNECTION_STRING)
