@@ -392,3 +392,79 @@ td .delete-btn:hover {
   border-bottom: 1px solid #333;
   margin-top: 60px;
 }
+
+/* ========== MOBİL UYĞUNLUQ (RESPONSIVE DIZAYN) ========== */
+
+/* Ekran eni 992 pikseldən kiçik olduqda (böyük planşetlər) */
+@media (max-width: 992px) {
+  .filter-container {
+      grid-template-columns: 1fr; /* Filterləri alt-alta düzürük */
+      justify-items: center;
+  }
+
+  .filter-buttons {
+      justify-content: center;
+  }
+}
+
+/* Ekran eni 768 pikseldən kiçik olduqda (planşetlər və telefonlar) */
+@media (max-width: 768px) {
+  /* Ümumi məzmun üçün boşluqları azaldırıq */
+  main {
+      padding: 15px;
+      margin: 20px 10px;
+  }
+
+  /* Başlıqdakı loqo və naviqasiyanı alt-alta düzürük */
+  .App-header {
+      flex-direction: column;
+      gap: 15px;
+  }
+
+  nav span {
+      display: block;
+      margin-bottom: 10px;
+  }
+
+  /* Cədvəldəki yazıların ölçüsünü bir az kiçildirirk */
+  th, td {
+      padding: 8px;
+      font-size: 12px;
+  }
+
+  /* Cədvəlin ekranın kənarına çıxmasının qarşısını alırıq */
+  /* Cədvəli üfüqi scroll etmək üçün bir qutuya yerləşdiririk */
+  .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch; /* iOS üçün daha rəvan scroll */
+      border: 1px solid #ddd;
+      border-radius: 4px;
+  }
+
+  .login-box, form {
+      padding: 20px;
+  }
+}
+
+/* Ekran eni 480 pikseldən kiçik olduqda (kiçik telefonlar) */
+@media (max-width: 480px) {
+  nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+  }
+
+  nav a {
+      margin-left: 0;
+  }
+
+  .logout-btn {
+      margin-left: 0;
+  }
+
+  .date-filters {
+      flex-direction: column;
+      align-items: stretch;
+  }
+}

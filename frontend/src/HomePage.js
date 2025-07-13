@@ -83,8 +83,10 @@ function HomePage() {
             <button onClick={handleReset} className="secondary-btn">Təmizlə</button>
         </div>
       </div>
+
       <p className="results-count"><strong>Nəticə: {aktlar.length} akt tapıldı</strong></p>
-      <table>
+      <div className="table-container">
+        <table>
         <thead>
           <tr><th>Müştəri</th><th>Məhsul</th><th>Seriya Nömrəsi</th><th>Status</th><th>Əməliyyatlar</th></tr>
         </thead>
@@ -107,6 +109,7 @@ function HomePage() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
